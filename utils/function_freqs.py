@@ -1,8 +1,33 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
 class freqs:
+    
+    def freq_table_mean(dataset, variable, dependant_variable):
+        """
+        Returns a cross table with number of observations, percentage from total
+        Parameters:
+        dataset : please provide a DataFrame object
+        varable : please provide the name of the feature inside ''
+        """
+        n_obs = dataset[variable].value_counts(dropna=False)
+        perc = round(dataset[variable].value_counts(dropna=False, normalize=True) * 100, 2)
+        mean_dep = dataset.groupby(variable, as_index=True)[dependant_variable].mean()
+
+        print("\nFrequency Table {one}:".format(one=variable))
+        print("\n")
+        return pd.concat(
+            [n_obs, perc,mean_dep],
+            axis=1,
+            keys=[
+                "N_Obs",
+                "Perc_Tot",
+                "Mean_GB_Flag"
+            ],
+            sort=True,
+        )
     
     def feature_graph_freq(dataframe,feature,plot_kind):
         """
@@ -59,3 +84,28 @@ class freqs:
         g.map(sns.histplot,variable_charges,bins=bins,kde=True)
         plt.tight_layout()
         plt.show()
+        
+    def CAR_CONT(dataframe, variable, gb_flag,bands):
+        """
+        Returns Characteristic Analysis Report based on Binary Default Definition
+        Parameters:
+        dataframe : please provide a DataFrame object 
+        variable : please provide the name of the feature inside '' 
+        gb_flag : please provide the name of the dependent variable inside ''
+        """    
+        dataframe = dataframe[[variable,gb_flag]]
+        dataframe[variable+"_bands"] = pd.qcut(dataframe[variable], bands,duplicates='drop')
+        dataframe = pd.concat(
+            [dataframe.groupby(dataframe.columns.values[2], as_index = False)[dataframe.columns.values[1]].count(),
+            dataframe.groupby(dataframe.columns.values[2], as_index = False)[dataframe.columns.values[1]].mean()],
+            axis = 1)
+        dataframe = dataframe.iloc[:, [0, 1, 3]]
+        dataframe.columns = [dataframe.columns.values[0], 'N_CASES', 'GOOD_RATE']
+        dataframe['PERC_CASES'] = round(dataframe['N_CASES'] / dataframe['N_CASES'].sum()*100,2)
+        dataframe['N_GOOD'] = round(dataframe['GOOD_RATE'] * dataframe['N_CASES'],0)
+        dataframe['N_BAD'] = round((1 - dataframe['GOOD_RATE']) * dataframe['N_CASES'],0)
+        dataframe['PERC_GOOD'] = round((dataframe['N_GOOD'] / dataframe['N_GOOD'].sum())*100,2)
+        dataframe['PERC_BAD'] = round((dataframe['N_BAD'] / dataframe['N_BAD'].sum())*100,2)
+        dataframe['BAD_RATE'] = round(dataframe['N_BAD']/dataframe['N_CASES']*100,2)
+        dataframe['GB_ODDS'] = round(dataframe['N_GOOD']/dataframe['N_BAD'],2)
+        return dataframe
