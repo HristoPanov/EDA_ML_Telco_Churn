@@ -1,10 +1,4 @@
 201907_EDA_Telco_Churn_02.ipynb
 201907_TelcoCustomer_Churn_EDA.ipynb
 MainProject_201907_EDA_TelcoCustomerChurn.ipynb
-01_Data/BCHI-dataset_2019-03-04.csv
-01_Data/credit_train.csv
-01_Data/crime - Copy.csv
-01_Data/TelcoChurn - Copy.csv
-01_Data/TelcoChurn.csv
-01_Data/test.csv
-01_Data/train.csv
+utils/__pycache__/const_folders.cpython-311.pyc
