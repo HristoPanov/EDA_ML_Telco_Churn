@@ -28,6 +28,9 @@ The sample dataset contains information from a Telco company about their portfol
 6. Categorical Variables Exploration
 7. Data Preprocessing for Modeling
 8. Modelling
+    * Logistic Regression
+    * Linear Regression
+    * Decision Tree
 
 
 ### Data Description
